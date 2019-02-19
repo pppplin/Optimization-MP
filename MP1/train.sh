@@ -1,5 +1,5 @@
 method=pr # cg or pr
-epochs=3 # need experiment
+epochs=100 # need experiment
 larger_param=False # True: large parameters; False: small
 reg=False #This is for hessian TODO
 no_restart=True
