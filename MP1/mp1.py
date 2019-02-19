@@ -7,14 +7,13 @@ from scipy.misc import imresize
 from data_loader import load_data
 
 @click.command()
-@click.argument('exp') 
 @click.option('--method', type=str) # cg or pr
-@click.option('--epoch', type=int)
+@click.option('--epochs', type=int)
 @click.option('--larger_param', type=bool, default=False)
 @click.option('--reg', type=bool, default=False)
 @click.option('--restart', type=bool, default=False)
 
-def main(exp, method, epoch, larger_param, reg, restart):
+def main(method, epoch, larger_param, reg, restart):
     if restart:
         raise NotImplementedError
 
@@ -70,9 +69,9 @@ def main(exp, method, epoch, larger_param, reg, restart):
 
     else:
         assert False
-        
+
     print("Training...")
-    optimizer.train(x_train, y_train, epochs=100)
+    optimizer.train(x_train, y_train, epochs=epochs)
     y_predict = optimizer.predict(x_test).argmax(axis=1)
     y_test = y_test.argmax(axis=1)
     print(metrics.classification_report(y_test, y_predict))
