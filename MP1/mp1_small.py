@@ -23,29 +23,29 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 
 # pr gradient
-# optimizer = algorithms.ConjugateGradient(
-# 	network=[
-# 	layers.Input(4),
-# 	layers.Softmax(3)
-# 	],
-# 	update_function='polak_ribiere',
-# 	loss='categorical_crossentropy',
-# 	verbose=True,
-# 	show_epoch=1
-# 	)
-
-# cg newton
-optimizer = algorithms.QuasiNewton(
+optimizer = algorithms.ConjugateGradient(
 	network=[
 	layers.Input(4),
 	layers.Softmax(3)
 	],
-	update_function='dfp',
+	update_function='polak_ribiere',
 	loss='categorical_crossentropy',
 	verbose=True,
 	show_epoch=1
-	# regularizer=algorithms.l2(10.)
 	)
+
+# cg newton
+# optimizer = algorithms.QuasiNewton(
+# 	network=[
+# 	layers.Input(4),
+# 	layers.Softmax(3)
+# 	],
+# 	update_function='dfp',
+# 	loss='categorical_crossentropy',
+# 	verbose=True,
+# 	show_epoch=1
+# 	# regularizer=algorithms.l2(10.)
+# 	)
 
 start = time.time()
 print("Training...")
@@ -61,8 +61,8 @@ print("Training...")
 # print label
 
 
-epochs = 100
-batch_size = y_train.shape[0]
+epochs = 10
+batch_size = 1 #y_train.shape[0]
 for epoch in range(epochs):
 	# print y_train.shape[0]/batch_size - 1
 	for i in range(y_train.shape[0]/batch_size):
