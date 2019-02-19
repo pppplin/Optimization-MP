@@ -1,9 +1,9 @@
-import click 
-import numpy as np
-from sklearn.preprocessing import OneHotEncoder
-from sklearn import model_selection, metrics, datasets
+import click
+#from sklearn.preprocessing import OneHotEncoder
+from sklearn import metrics, datasets, preprocessing
 from neupy import algorithms, layers
-from scipy.misc import imresize
+from sklearn.model_selection import train_test_split
+#from scipy.misc import imresize
 from data_loader import load_data
 
 @click.command()
@@ -13,14 +13,14 @@ from data_loader import load_data
 @click.option('--reg', type=bool, default=False)
 @click.option('--restart', type=bool, default=False)
 
-def main(method, epoch, larger_param, reg, restart):
+def main(method, epochs, larger_param, reg, restart):
     if restart:
         raise NotImplementedError
 
     if larger_param:
         x_train, x_test, y_train, y_test = load_data()
         in_num = 784
-        softmax_num = 10 
+        softmax_num = 10
     else:
         dataset = datasets.load_iris()
         data, target = dataset.data, dataset.target
@@ -32,10 +32,10 @@ def main(method, epoch, larger_param, reg, restart):
             test_size=0.15
             )
         in_num = 4
-        softmax_num = 3 
+        softmax_num = 3
 
     if reg:
-        regularizer = al
+        regularizer = algorithms.l2(10.)
         raise NotImplementedError
 
     if method=='cg':
@@ -51,7 +51,7 @@ def main(method, epoch, larger_param, reg, restart):
             ],
             loss='categorical_crossentropy',
             verbose=True,
-            show_epoch=10,
+            show_epoch=1,
             regularizer = regularizer
             )
 
@@ -64,9 +64,9 @@ def main(method, epoch, larger_param, reg, restart):
           update_function='polak_ribiere',
           loss='categorical_crossentropy',
           verbose=True,
+          show_epoch=1,
           regularizer = regularizer
           )
-
     else:
         assert False
 
@@ -80,18 +80,4 @@ def main(method, epoch, larger_param, reg, restart):
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-# print("Training...")
-# optimizer.train(x_train, y_train, x_test, y_test, epochs=20)
-
-# y_predicted = optimizer.predict(x_test).argmax(axis=1)
-# y_test = np.asarray(y_test.argmax(axis=1)).reshape(len(y_test))
-
-# print(metrics.classification_report(y_test, y_predicted))
-# score = metrics.accuracy_score(y_test, y_predicted)
-# print("Validation accuracy: {:.2%}".format(score))
 
