@@ -2,8 +2,8 @@ from sklearn import datasets, preprocessing
 from sklearn.utils import check_random_state
 from sklearn.model_selection import train_test_split
 
-def load_data(large=False):
-    if large:
+def load_data(larger=False):
+    if larger:
         X, y = datasets.fetch_openml('mnist_784', version=1, return_X_y=True)
         random_state = check_random_state(0)
         permutation = random_state.permutation(X.shape[0])
@@ -18,12 +18,10 @@ def load_data(large=False):
     dataset = datasets.load_iris()
     data, target = dataset.data, dataset.target
     data_scaler = preprocessing.MinMaxScaler()
-    target_scaler = preprocessing.OneHotEncoder(sparse=False)
     return train_test_split(
             data_scaler.fit_transform(data),
-            target_scaler.fit_transform(target.reshape(-1, 1)),
+            target,
             test_size=0.15
             )
-
 
 

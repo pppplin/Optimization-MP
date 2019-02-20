@@ -29,6 +29,7 @@ def main(method, epochs, larger_param, full_batch, no_restart):
 
     if method=='cg':
         clf = LogisticRegression(solver="newton-cg", multi_class='multinomial', warm_start=True)
+
     elif method=='pr':
         optimizer = ConjugateGradient(
                 network=[
@@ -58,8 +59,8 @@ def main(method, epochs, larger_param, full_batch, no_restart):
             else:
                 optimizer.train(data, label, epochs=1)
         if method=='cg':
-            print("training accuracy : {}").format(clf.score(x_train, y_train))
-            print("testing accuracy : {}").format(clf.score(x_test, y_test))
+            print("training accuracy : {}".format(clf.score(x_train, y_train)))
+            print("testing accuracy : {}".format(clf.score(x_test, y_test)))
 
     end = time.time()
     if method=='pr':
