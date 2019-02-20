@@ -4,7 +4,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn import metrics
 from neupy import layers
 #from scipy.misc import imresize
-from data_loader import load_data_cg, load_data_pr
+from data_loader import load_data
 
 @click.command()
 @click.option('--method', type=str)
@@ -25,12 +25,11 @@ def main(method, epochs, larger_param, full_batch, no_restart):
     else:
         in_num = 4
         softmax_num = 3
+    x_train, x_test, y_train, y_test = load_data(larger=larger_param)
 
     if method=='cg':
-        x_train, x_test, y_train, y_test = load_data_cg()
-        clf = LogisticRegression(solver="newton-cg", warm_start=True)
+        clf = LogisticRegression(solver="newton-cg", multi_class='multinomial', warm_start=True)
     elif method=='pr':
-        x_train, x_test, y_train, y_test = load_data_pr()
         optimizer = ConjugateGradient(
                 network=[
                     layers.Input(in_num),
@@ -51,11 +50,11 @@ def main(method, epochs, larger_param, full_batch, no_restart):
     print("Training")
     start = time.time()
     for epoch in range(epochs):
-        for i in range(int(y_train.shape[0]/batch_size)):
+        for i in range(int(full_batch_size/batch_size)):
             data = x_train[i*batch_size:(i+1)*batch_size]
             label = y_train[i*batch_size:(i+1)*batch_size]
             if method=='cg':
-                clf.fit(data,label)
+                clf.fit(data, label)
             else:
                 optimizer.train(data, label, epochs=1)
         if method=='cg':
