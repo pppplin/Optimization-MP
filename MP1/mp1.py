@@ -23,7 +23,7 @@ def main(method, epochs, larger_param, full_batch, no_restart):
         softmax_num = 3
     x_train, x_test, y_train, y_test = load_data(larger=larger_param, method=method)
     if method=='cg':
-        clf = LogisticRegression(solver="newton-cg", multi_class='multinomial', warm_start=True)
+        clf = LogisticRegression(solver="newton-cg", multi_class='multinomial', warm_start=True, max_iter=1)
     elif method=='pr':
         y_test_label = y_test.argmax(axis=1)
         y_train_label = y_train.argmax(axis=1)
@@ -85,30 +85,44 @@ def main(method, epochs, larger_param, full_batch, no_restart):
                 train_acc.append(score_train)
     return time_slot, train_acc, test_acc
 
-def plot(time_slot, train_acc, test_acc, name):
+def plot(time_slot_pr, train_acc_pr, test_acc_pr, time_slot_cg, train_acc_cg, test_acc_cg, name):
     plt.figure(figsize=(8,6), dpi=300)
-    for i in range(len(time_slot)):
+    epoch = range(len(time_slot_pr))
+    for i in epoch:
         print("epoch: {}".format(i))
-        print("training accuracy : {}".format(train_acc[i]))
-        print("testing accuracy : {}".format(test_acc[i]))
-        print("time (s) : {}".format(time_slot[i]))
-    plt.title("Convergence Time And Accuracy")
-    plt.xlabel("Convergence Time (s)")
+        print("pr:")
+        print("training accuracy : {}".format(train_acc_pr[i]))
+        print("testing accuracy : {}".format(test_acc_pr[i]))
+        print("time (s) : {}".format(time_slot_pr[i]))
+        print("cg:")
+        print("training accuracy : {}".format(train_acc_cg[i]))
+        print("testing accuracy : {}".format(test_acc_cg[i]))
+        print("time (s) : {}".format(time_slot_cg[i]))
+    plt.title("Epoch And Accuracy")
+    plt.xlabel("Epoch")
     plt.ylabel("Accuracy")
-    
-    
-    plt.plot(time_slot, train_acc, color="blue", linewidth=1.0, linestyle="-", label='training_accuracy',)
-    plt.plot(time_slot, test_acc, color="green", linewidth=1.0, linestyle="-", label='test_accuracy')
+    plt.plot(epoch, test_acc_pr, color="green", linewidth=1.0, linestyle="-", label='test_accuracy_pr')
+    plt.plot(epoch, test_acc_cg, color="blue", linewidth=1.0, linestyle="-", label='test_accuracy_cg')
     plt.legend(loc='upper left')
     plt.ylim(0, 1.0)
     plt.savefig("./figures/{}.png".format(name),dpi=300)
     plt.show()
+    plt.figure(figsize=(8,6), dpi=300)
+    plt.title("Epoch And Time")
+    plt.xlabel("Epoch")
+    plt.ylabel("Convergence Time (s)")
+    plt.plot(epoch, time_slot_pr, color="red", linewidth=1.0, linestyle="-", label='time_pr')
+    plt.plot(epoch, time_slot_cg, color="black", linewidth=1.0, linestyle="-", label='time_cg')
+    plt.legend(loc='upper left')
+    plt.ylim(0, 10.0)
+    plt.savefig("./figures/{}_time.png".format(name),dpi=300)
+    plt.show()
 
 if __name__ == '__main__':
-    m='cg'
     e=10
-    l=True
+    l=False
     f=False
     nr=True
-    time_slot, train_acc, test_acc = main(method=m, epochs=e, larger_param=l, full_batch=f, no_restart=nr)
-    plot(time_slot, train_acc, test_acc, "method: {}, epoch: {}, larger: {}, full: {}, nr: {}".format(m, e, l, f, nr))
+    time_slot_pr, train_acc_pr, test_acc_pr = main(method='pr', epochs=e, larger_param=l, full_batch=f, no_restart=nr)
+    time_slot_cg, train_acc_cg, test_acc_cg = main(method='cg', epochs=e, larger_param=l, full_batch=f, no_restart=nr)
+    plot(time_slot_pr, train_acc_pr, test_acc_pr, time_slot_cg, train_acc_cg, test_acc_cg, "epoch: {}, larger: {}, full: {}, nr: {}".format(e, l, f, nr))
