@@ -119,8 +119,8 @@ def plot(time_slot_pr, train_acc_pr, test_acc_pr, time_slot_cg, train_acc_cg, te
     plt.show()
 
 if __name__ == '__main__':
-    e=10
-    l=False
+    e=40
+    l=True
     f=False
     nr=True
     time_slot_pr, train_acc_pr, test_acc_pr = main(method='pr', epochs=e, larger_param=l, full_batch=f, no_restart=nr)
