@@ -46,8 +46,11 @@ def main(method, epochs, larger_param, full_batch, no_restart):
     if full_batch:
         batch_size = full_batch_size
     else:
-        batch_size = 100 #size of mini-batch
-
+        if larger_param:
+            batch_size = 100 #size of mini-batch
+        else:
+            batch_size = 20
+        
     print("Training")
     print("Full Batch Size: {}".format(full_batch_size))
     print("Batch Size: {}".format(batch_size))
@@ -114,14 +117,14 @@ def plot(time_slot_pr, train_acc_pr, test_acc_pr, time_slot_cg, train_acc_cg, te
     plt.plot(epoch, time_slot_pr, color="red", linewidth=1.0, linestyle="-", label='time_pr')
     plt.plot(epoch, time_slot_cg, color="black", linewidth=1.0, linestyle="-", label='time_cg')
     plt.legend(loc='upper left')
-    plt.ylim(0, 10.0)
+    plt.ylim(0, 2.0)
     plt.savefig("./figures/{}_time.png".format(name),dpi=300)
     plt.show()
 
 if __name__ == '__main__':
-    e=40
-    l=True
-    f=False
+    e=15
+    l=False
+    f=True
     nr=True
     time_slot_pr, train_acc_pr, test_acc_pr = main(method='pr', epochs=e, larger_param=l, full_batch=f, no_restart=nr)
     time_slot_cg, train_acc_cg, test_acc_cg = main(method='cg', epochs=e, larger_param=l, full_batch=f, no_restart=nr)
