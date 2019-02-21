@@ -25,11 +25,10 @@ def main(method, epochs, larger_param, full_batch, no_restart):
     else:
         in_num = 4
         softmax_num = 3
-    x_train, x_test, y_train, y_test = load_data(larger=larger_param)
+    x_train, x_test, y_train, y_test = load_data(larger=larger_param, method=method)
 
     if method=='cg':
         clf = LogisticRegression(solver="newton-cg", multi_class='multinomial', warm_start=True)
-
     elif method=='pr':
         optimizer = ConjugateGradient(
                 network=[
