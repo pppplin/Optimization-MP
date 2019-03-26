@@ -15,6 +15,6 @@ vh(257,257) = 1;
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
 %optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
 options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
-[vh, fval] = fminunc(@smoothnessAL, vh);
+[v, fval] = fminunc(@smoothnessAL, vh);
 
 

@@ -8,11 +8,11 @@ A = N*A;
 hx = A*vh;
 hy = vh*A';
 % initialization??
-lambda = 1; 
-c = 100;
+lambda = 0.1; 
+c = 0.1;
 M = hx'*hx + hy'*hy;
-constraint = [abs(vh(1,1)-1),abs(vh(1,129)),abs(vh(1,257)-1),abs(vh(129,1)),abs(vh(129,129)-1),abs(vh(129,257)),abs(vh(257,1)-1),abs(vh(257,129)),abs(vh(257,257)-1)]
-f = sum(M(:)) - lambda*sum(constraint) + (c/2)*sum(constraint.^2);
+cons = [abs(vh(1,1)-1),abs(vh(1,129)),abs(vh(1,257)-1),abs(vh(129,1)),abs(vh(129,129)-1),abs(vh(129,257)),abs(vh(257,1)-1),abs(vh(257,129)),abs(vh(257,257)-1)]
+f = sum(M(:)) - lambda*sum(h) + (c/2)*sum(h.^2);
 
 % providing gradient not working
 if nargout > 1 % gradient required
