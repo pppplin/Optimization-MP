@@ -1,5 +1,5 @@
 N = 256;
-H = zeros(N+1, N+1);
+H = zeros(N+1);
 
 H(1,1) = 1;
 H(1,129) = 0;
@@ -12,7 +12,9 @@ H(257,129) = 0;
 H(257,257) = 1;
 
 %smoothness and points, Lagrangian
-%options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true);
+%options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
+%optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
+options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
 [H, fval] = fminunc(@smoothnessAL, H);
 
 
