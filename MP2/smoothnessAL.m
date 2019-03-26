@@ -1,4 +1,4 @@
-function [f,g] = func(H)
+function [f,g] = smoothnessAL(H)
 N = 256;
 A = -eye(N+1, N+1);
 for r = 1:N

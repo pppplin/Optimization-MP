@@ -12,7 +12,7 @@ H(257,129) = 0;
 H(257,257) = 1;
 
 %smoothness and points, Lagrangian
-options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true);
-[H, fval] = fminunc(@func,H,options);
+%options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true);
+[H, fval] = fminunc(@smoothnessAL, H);
 
 
