@@ -1,25 +1,25 @@
-function [f,g] = smoothnessAL(H)
+function [f, g, H] = smoothnessAL(vh)
 N = 256;
 A = -eye(N+1);
 for r = 1:N
     A(r,r+1) = 1;
 end
-A = (1/N)*A;
-hx = A*H;
-hy = H*A';
-lambda = 1;
-c = 1;
+A = N*A;
+hx = A*vh;
+hy = vh*A';
+% initialization??
+lambda = 0.1; 
+c = 0.1;
 M = hx'*hx + hy'*hy;
-h = abs(H(1,1)-1)+abs(H(1,129))+abs(H(1,257)-1)+abs(H(129,1))+abs(H(129,129)-1)+abs(H(129,257))+abs(H(257,1)-1)+abs(H(257,129))+abs(H(257,257)-1);
-f = sum(M(:)) - lambda*h + (c/2)*(h*h);
+h = [abs(vh(1,1)-1),abs(vh(1,129)),abs(vh(1,257)-1),abs(vh(129,1)),abs(vh(129,129)-1),abs(vh(129,257)),abs(vh(257,1)-1),abs(vh(257,129)),abs(vh(257,257)-1)]
+f = sum(M(:)) - lambda*sum(h) + (c/2)*sum(h.^2);
 
 % providing gradient not working
 if nargout > 1 % gradient required
     % g = 4A'AH; Hessian = 4A'A
-    g = sum(4*sparse(A'*A));  
+    g = sum(4*sparse(A')*sparse(A)*vh);  
     if nargout > 2 % Hessian required
-        H = [1200*x(1)^2-400*x(2)+2, -400*x(1);
-            -400*x(1), 200];  
+        H = sum(4*sparse(A')*sparse(A));  
     end
 end
 end
