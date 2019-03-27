@@ -12,7 +12,7 @@ vh(257,129) = 0;
 vh(257,257) = 1;
 
 %smoothness and points, Lagrangian
-options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true,'HessianFcn', 'objective'); 
+%options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true,'HessianFcn', 'objective'); 
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
 % v should be the final h(x,y) (height) matrix. 
 [v, FVAL] = fminunc(@smoothnessAL, vh, options);
@@ -22,4 +22,3 @@ options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGrad
 figure
 mesh(X,Y,v)
 
-% problem now. Not sure if hessian is correct, and sparse???
