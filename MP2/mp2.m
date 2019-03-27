@@ -1,4 +1,4 @@
-N = 10;
+N = 256;
 M = N + 1;
 vh = zeros(M);
 
@@ -16,7 +16,8 @@ vh(M,M) = 1;
 
 D = sparse(1:M*M,1:M*M,ones(1,M*M),M*M,M*M);
 E = sparse(M + 1:M*M,1:M*M-M,ones(1,M*M-M),M*M,M*M);
-hstr = E+D+E';
+F = sparse(2:M*M,1:M*M-1,ones(1,M*M-1),M*M,M*M);
+hstr = E+D+E'+F+F';
 options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true,'HessPattern',hstr,'MaxIterations', 1000, 'PlotFcn', @myplot);
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true,'HessianFcn', 'objective'); 
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true); 
