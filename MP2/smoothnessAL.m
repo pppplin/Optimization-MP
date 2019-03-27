@@ -20,8 +20,9 @@ if nargout > 1 % gradient required
     % g = 4A'AH; Hessian = 4A'A
     g = 4*sparse(A')*sparse(A)*vh; 
     if nargout > 2 % Hessian required
-        %H = 4*reshape(sparse(A),[N+1,N+1,1])*reshape(sparse(A), [1,N+1,N+1]);  
-        % approximation should be the following, but exactly how???
+        % TODO: approximation should be the following, but exactly how???
+        % https://www.mathworks.com/help/optim/ug/fminunc.html#butpb7p-options
+        % USE HessianMultiplyFcn?? 
         H = 4*sparse(A')*sparse(A);  
     end
 end
