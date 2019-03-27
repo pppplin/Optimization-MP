@@ -9,8 +9,8 @@ for r = 1:N
     A_g(r,r+1) = -2;
     A_g(r+1,r) = -2;
 end
-A_g(1,1) = 6;
-A_g(M, M) = 6;
+A_g(1,1) = 2;
+A_g(M,M) = 2;
 A = N*A;
 hx = vh*A;
 hy = A'*vh;
@@ -20,7 +20,7 @@ c = 100;
 S = hx.^2 + hy.^2;
 sum_S = sum(S,'all');
 
-constraint = [abs(vh(1,1)-1),abs(vh(1,half)),abs(vh(1,half)-1),abs(vh(half,1)),abs(vh(half,half)-1),abs(vh(half,M)),abs(vh(M,1)-1),abs(vh(M,half)),abs(vh(M,M)-1)];
+constraint = [vh(1,1)-1,vh(1,half),vh(1,half)-1,vh(half,1),vh(half,half)-1,vh(half,M),vh(M,1)-1,vh(M,half),vh(M,M)-1];
 H_c = zeros(N+1);
 H_c(1,1)= (c - lambda)*(vh(1,1) - 1);
 H_c(1,half)= (c - lambda)*(vh(1,half));
