@@ -9,8 +9,8 @@ for r = 1:N
     A_g(r,r+1) = -2;
     A_g(r+1,r) = -2;
 end
-A_g(1,1) = 2;
-A_g(M, M) = 2;
+A_g(1,1) = 6;
+A_g(M, M) = 6;
 A = N*A;
 hx = vh*A;
 hy = A'*vh;
