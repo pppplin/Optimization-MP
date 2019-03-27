@@ -1,5 +1,5 @@
 function [f, g] = smoothnessAL(vh)
-N = 10;
+N = 256;
 M = N + 1;
 half = ceil( M / 2 );
 A_g = 4*eye(M);
