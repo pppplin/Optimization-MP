@@ -16,7 +16,7 @@ hx = vh*A;
 hy = A'*vh;
 % TODO: finetune itialization
 lambda = 1; 
-c = 100;
+c = 100000;
 S = hx.^2 + hy.^2;
 sum_S = sum(S,'all');
 

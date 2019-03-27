@@ -1,6 +1,6 @@
 N = 256;
 M = N + 1;
-vh = zeros(M);
+vh = randi([0, 1], M);
 
 half = ceil( M / 2 );
 
