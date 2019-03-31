@@ -1,6 +1,7 @@
 N = 256;
 M = N + 1;
-vh = randi([0, 1], M);
+% vh = randi([0, 1], M);
+vh = zeros(M);
 
 half = ceil( M / 2 );
 
@@ -14,6 +15,7 @@ vh(M,1) = 1;
 vh(M,half) = 0;
 vh(M,M) = 1;
 
+%{
 for i = 2:(half-1)
     % (0, 0, 1) --> (0, 0.5, 0)
     vh(1, i) = 1 * (129 - i) / 128;
@@ -40,6 +42,7 @@ for i = 2:(half-1)
     % (0.5, 1, 0) --> (1, 1, 1)
     vh(128 + i, 257) = 1 * (i - 1) / 128;
 end
+%}
 
 D = sparse(1:M*M,1:M*M,ones(1,M*M),M*M,M*M);
 E = sparse(M + 1:M*M,1:M*M-M,ones(1,M*M-M),M*M,M*M);

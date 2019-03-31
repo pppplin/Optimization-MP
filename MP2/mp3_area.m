@@ -102,54 +102,65 @@ g(i, j) = g(i, j) * 2 / d_l;
 constraint = [vh(1,1)-1,vh(1,half),vh(1,half)-1,vh(half,1),vh(half,half)-1,vh(half,M),vh(M,1)-1,vh(M,half),vh(M,M)-1];
 
 H_c = zeros(M);
-H_c(1,1) = (c - lambda)*(vh(1,1) - 1);
-H_c(1,half) = (c - lambda)*(vh(1,half));
-H_c(1,M) = (c - lambda)*(vh(1,M) - 1);
-H_c(half,1) = (c - lambda)*(vh(half,1));
-H_c(half,half) = (c - lambda)*(vh(half,half) - 1);
-H_c(half,M) = (c - lambda)*(vh(half,M));
-H_c(M,1) = (c - lambda)*(vh(M,1) - 1);
-H_c(M,half) = (c - lambda)*(vh(M,half));
-H_c(M,M) = (c - lambda)*(vh(M,M) - 1);
+% H_c(1,1) = (c - lambda)*(vh(1,1) - 1);
+% H_c(1,half) = (c - lambda)*(vh(1,half));
+% H_c(1,M) = (c - lambda)*(vh(1,M) - 1);
+% H_c(half,1) = (c - lambda)*(vh(half,1));
+% H_c(half,half) = (c - lambda)*(vh(half,half) - 1);
+% H_c(half,M) = (c - lambda)*(vh(half,M));
+% H_c(M,1) = (c - lambda)*(vh(M,1) - 1);
+% H_c(M,half) = (c - lambda)*(vh(M,half));
+% H_c(M,M) = (c - lambda)*(vh(M,M) - 1);
+H_c(1,1) = c *(vh(1,1) - 1)- lambda;
+H_c(1,half) = c*(vh(1,half)) - lambda;
+H_c(1,M) = c*(vh(1,M) - 1) - lambda;
+H_c(half,1) = c *(vh(half,1)) - lambda;
+H_c(half,half) = c*(vh(half,half) - 1) - lambda;
+H_c(half,M) = c*(vh(half,M)) - lambda;
+H_c(M,1) = c*(vh(M,1) - 1) - lambda;
+H_c(M,half) = c*(vh(M,half)) - lambda;
+H_c(M,M) = c*(vh(M,M) - 1)- lambda;
 
+%{
 for i = 2:(half-1)
     % (0, 0, 1) --> (0, 0.5, 0)
     constraint = [constraint, vh(1, i) - 1 * (129 - i) / 128];
-    H_c(1, i) = (c - lambda) * vh(1, i);
+    H_c(1, i) = c * (vh(1, i) - 1 * (129 - i) / 128) - lambda;
     % (0, 0.5, 0) --> (0, 1, 1)
     constraint = [constraint, vh(1, 128 + i) - 1 * (i - 1) / 128];
-    H_c(1, 128 + i) = (c - lambda) * vh(1, 128 + i);
+    H_c(1, 128 + i) = c * (vh(1, 128 + i) - 1 * (i - 1) / 128) - lambda;
     % (0.5, 0, 0) --> (0.5, 0.5, 1)
     constraint = [constraint, vh(129, i) - 1 * (i - 1) / 128];
-    H_c(129, i) = (c - lambda) * vh(129, i);
+    H_c(129, i) = c * (vh(129, i) - 1 * (i - 1) / 128)-lambda;
     % (0,5, 0.5, 1) --> (0.5, 1, 0)
     constraint = [constraint, vh(129, 128 + i) - 1 * (129 - i) / 128];
-    H_c(129, 128 + i) = (c - lambda) * vh(129, 128 + i);
+    H_c(129, 128 + i) = c * (vh(129, 128 + i) - 1 * (129 - i) / 128) -lambda;
     % (1, 0, 1) --> (1, 0.5, 0)
     constraint = [constraint, vh(257, i) - 1 * (129 - i) / 128];
-    H_c(257, i) = (c - lambda) * vh(257, i);
+    H_c(257, i) = c * (vh(257, i) - 1 * (129 - i) / 128) - lambda;
     % (1, 0.5, 0) --> (1, 1, 1)
     constraint = [constraint, vh(257, 128 + i) - 1 * (i - 1) / 128];
-    H_c(257, 128 + i) = (c - lambda) * vh(257, 128 + i);
+    H_c(257, 128 + i) = c * (vh(257, 128 + i) - 1 * (i - 1) / 128) - lambda;
     % (0, 0, 1) --> (0.5, 0, 1)
     constraint = [constraint, vh(i, 1) - 1 * (129 - i) / 128];
-    H_c(i, 1) = (c - lambda) * vh(i, 1);
+    H_c(i, 1) = c * (vh(i, 1) - 1 * (129 - i) / 128) - lambda;
     % (0.5, 0, 1) --> (1, 0, 1)
     constraint = [constraint, vh(128 + i, 1) - 1 * (i - 1) / 128];
-    H_c(128 + i, 1) = (c -lambda) * vh(128 + i, 1);
+    H_c(128 + i, 1) = c * (vh(128 + i, 1) - 1 * (i - 1) / 128) - lambda;
     % (0, 0.5, 1) --> (0.5, 0.5, 1)
     constraint = [constraint, vh(i, 129) - 1 * (i - 1) / 128];
-    H_c(i, 129) = (c -lambda) * vh(i, 129);
+    H_c(i, 129) = c * (vh(i, 129) - 1 * (i - 1) / 128) - lambda;
     % (0.5, 0.5, 1) --> (1, 0.5, 0)
     constraint = [constraint, vh(128 + i, 129) - 1 * (129 - i) / 128];
-    H_c(128 + i, 129) = (c -lambda) * vh(128 + i, 129);
+    H_c(128 + i, 129) = c * (vh(128 + i, 129) - 1 * (129 - i) / 128) - lambda;
     % (0, 1, 1) --> (0.5, 1, 0)
     constraint = [constraint, vh(i, 257) - 1 * (129 - i) / 128];
-    H_c(i, 257) = (c -lambda) * vh(i, 257);
+    H_c(i, 257) = c * (vh(i, 257) - 1 * (129 - i) / 128) - lambda;
     % (0.5, 1, 0) --> (1, 1, 1)
     constraint = [constraint, vh(128 + i, 257) - 1 * (i - 1) / 128];
-    H_c(128 + i, 257) = (c -lambda) * vh(128 + i, 257);
+    H_c(128 + i, 257) = c * (vh(128 + i, 257) - 1 * (i - 1) / 128) - lambda;
 end
+%}
 
 f = sum_AREA_S - lambda * sum(constraint) + (c/2) * sum(constraint.^2);
 g = g + H_c;
