@@ -32,11 +32,17 @@ ARE_S = sqrt(AREA_S);
 sum_AREA_S = sum(AREA_S, 'all') / d_l;
 
 g = zeros(M);
-for i = 2:(M - 1)
-    for j = 2:(M - 1)
-        g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
-        g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
-        g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
+for i = 1:M
+    for j = 1:M
+        if i < M & j < M
+            g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
+        end
+        if i > 1
+            g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
+        end
+        if j > 1
+            g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
+        end
         g(i, j) = g(i, j) * 2 / d_l;
     end
 end
@@ -54,7 +60,7 @@ H_c(M,1) = (c - lambda)*(vh(M,1) - 1);
 H_c(M,half) = (c - lambda)*(vh(M,half));
 H_c(M,M) = (c - lambda)*(vh(M,M) - 1);
 
-for i = 1:(half - 1)
+for i = 2:(half - 1)
     % (0, 0, 1) --> (0, 0.5, 0)
     constraint = [constraint, vh(1, i) - 1 * (129 - i) / 128];
     H_c(1, i) = (c - lambda) * vh(1, i);
@@ -94,6 +100,7 @@ for i = 1:(half - 1)
 end
 
 f = sum_AREA_S - lambda * sum(constraint) + (c/2) * sum(constraint.^2);
+g = g + H_c;
 % if nargout > 1 % gradient required
 %     % g = 4A'AH; Hessian = 4A'A
 %
