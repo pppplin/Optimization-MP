@@ -22,7 +22,7 @@ options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGrad
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true,'HessianFcn', 'objective');
 %options = optimoptions(@fminunc,'Algorithm','trust-region','SpecifyObjectiveGradient',true);
 % v should be the final h(x,y) (height) matrix.
-[v, FVAL] = fminunc(@cp3_area, vh, options);
+[v, FVAL] = fminunc(@mp3_area, vh, options);
 
 
 
