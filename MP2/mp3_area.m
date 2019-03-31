@@ -17,35 +17,87 @@ half = ceil( M / 2 );
 % hy = A'*vh;
 % % TODO: finetune itialization
 lambda = 1;
-c = 100000;
+c = 1000;
 % S = hx.^2 + hy.^2;
 % sum_S = sum(S,'all');
 
 % create sqrt(l^2 + h_x^2 + h_y^2)
 AREA_S = zeros(M);
-for i = 2:M
-    for j = 2:M
-        AREA_S(i, j) = d_l^2 + (vh(i, j) - vh(i-1, j))^2 + (vh(i, j) - vh(i, j-1))^2;
+for i = 1:M
+    for j = 1:M
+        if i == M
+            if j == M
+                AREA_S(i, j) = d_l^2 + (vh(i, j) - vh(i-1, j))^2 + (vh(i, j) - vh(i, j-1))^2;
+            else
+                AREA_S(i, j) = d_l^2 + (vh(i, j) - vh(i-1, j))^2 + (vh(i, j) - vh(i, j+1))^2;
+            end
+        end
+
+        if j == M
+            if i ~= M
+                AREA_S(i, j) = d_l^2 + (vh(i+1, j) - vh(i, j))^2 + (vh(i, j) - vh(i, j-1))^2;
+            end
+        end
+
+        if i < M & j < M
+            AREA_S(i, j) = d_l^2 + (vh(i+1, j) - vh(i, j))^2 + (vh(i, j+1) - vh(i, j))^2;
+        end
     end
 end
 ARE_S = sqrt(AREA_S);
 sum_AREA_S = sum(AREA_S, 'all') / d_l;
 
 g = zeros(M);
-for i = 1:M
-    for j = 1:M
-        if i < M & j < M
-            g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
-        end
-        if i > 1
-            g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
-        end
-        if j > 1
-            g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
-        end
-        g(i, j) = g(i, j) * 2 / d_l;
+
+g(1, 1) = (2 * vh(1, 1) - vh(2, 1) - vh(1, 2)) / AREA_S(1, 1);
+
+% i = 1
+i = 1;
+for j = 2:(M-1)
+    g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
+end
+
+% i = M
+i = M;
+g(M, 1) = (2 * vh(M, 1) - vh(M-1, 1) - vh(M, 2)) / AREA_S(M, 1);
+g(M, 1) = g(M, 1) + (vh(M, 1) - vh(M-1, 1)) / AREA_S(M - 1, j);
+for j = 2:(M-1)
+    g(i, j) = (2 * vh(i, j) - vh(i-1, j) - vh(i, j+1)) / AREA_S(i,j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i, j-1)) / AREA_S(i, j-1);
+end
+
+% j = 1
+j = 1;
+for i = 2:(M-1)
+    g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
+end
+
+% j = M
+j = M;
+g(1, M) = (2 * vh(1, M) - vh(2, M) - vh(1, M-1)) / AREA_S(1, M);
+g(1, M) = g(1, M) + (vh(1, M) - vh(1, M-1)) / AREA_S(1, M-1);
+for i = 2:(M-1)
+    g(i, j) = (2 * vh(i, j) - vh(i+1, j) - vh(i, j-1)) / AREA_S(i, j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i-1, j)) / AREA_S(i, j);
+    g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
+end
+
+g(M, M) = (2 * vh(M, M) - vh(M-1, M) - vh(M, M-1)) / AREA_S(M, M);
+g(M, M) = g(M, M) + (vh(M, M) - vh(M - 1, M)) / AREA_S(M-1, M);
+g(M, M) = g(M, M) + (vh(M, M) - vh(M, M - 1)) / AREA_S(M, M-1);
+
+for i = 2:(M-1)
+    for j = 2:(M-1)
+        g(i, j) = (2 * vh(i, j) - vh(i + 1, j) - vh(i, j + 1)) / AREA_S(i, j);
+        g(i, j) = g(i, j) + (vh(i, j) - vh(i- 1, j)) / AREA_S(i - 1, j);
+        g(i, j) = g(i, j) + (vh(i, j) - vh(i, j - 1)) / AREA_S(i, j - 1);
     end
 end
+
+g(i, j) = g(i, j) * 2 / d_l;
 
 constraint = [vh(1,1)-1,vh(1,half),vh(1,half)-1,vh(half,1),vh(half,half)-1,vh(half,M),vh(M,1)-1,vh(M,half),vh(M,M)-1];
 
@@ -60,43 +112,43 @@ H_c(M,1) = (c - lambda)*(vh(M,1) - 1);
 H_c(M,half) = (c - lambda)*(vh(M,half));
 H_c(M,M) = (c - lambda)*(vh(M,M) - 1);
 
-for i = 2:(half - 1)
+for i = 2:(half-1)
     % (0, 0, 1) --> (0, 0.5, 0)
     constraint = [constraint, vh(1, i) - 1 * (129 - i) / 128];
     H_c(1, i) = (c - lambda) * vh(1, i);
     % (0, 0.5, 0) --> (0, 1, 1)
-    constraint = [constraint, vh(1, 129 + i) - 1 * (i - 1) / 128];
-    H_c(1, 129 + i) = (c - lambda) * vh(1, 129 + i);
+    constraint = [constraint, vh(1, 128 + i) - 1 * (i - 1) / 128];
+    H_c(1, 128 + i) = (c - lambda) * vh(1, 128 + i);
     % (0.5, 0, 0) --> (0.5, 0.5, 1)
     constraint = [constraint, vh(129, i) - 1 * (i - 1) / 128];
     H_c(129, i) = (c - lambda) * vh(129, i);
     % (0,5, 0.5, 1) --> (0.5, 1, 0)
-    constraint = [constraint, vh(129, 129 + i) - 1 * (129 - i) / 128];
-    H_c(129, 129 + i) = (c - lambda) * vh(129, 129 + i);
+    constraint = [constraint, vh(129, 128 + i) - 1 * (129 - i) / 128];
+    H_c(129, 128 + i) = (c - lambda) * vh(129, 128 + i);
     % (1, 0, 1) --> (1, 0.5, 0)
     constraint = [constraint, vh(257, i) - 1 * (129 - i) / 128];
     H_c(257, i) = (c - lambda) * vh(257, i);
     % (1, 0.5, 0) --> (1, 1, 1)
-    constraint = [constraint, vh(257, 129 + i) - 1 * (i - 1) / 128];
-    H_c(257, 129 + i) = (c - lambda) * vh(257, 129 + i);
+    constraint = [constraint, vh(257, 128 + i) - 1 * (i - 1) / 128];
+    H_c(257, 128 + i) = (c - lambda) * vh(257, 128 + i);
     % (0, 0, 1) --> (0.5, 0, 1)
     constraint = [constraint, vh(i, 1) - 1 * (129 - i) / 128];
     H_c(i, 1) = (c - lambda) * vh(i, 1);
     % (0.5, 0, 1) --> (1, 0, 1)
-    constraint = [constraint, vh(129 + i, 1) - 1 * (i - 1) / 128];
-    H_c(129 + i, 1) = (c -lambda) * vh(129 + i, 1);
+    constraint = [constraint, vh(128 + i, 1) - 1 * (i - 1) / 128];
+    H_c(128 + i, 1) = (c -lambda) * vh(128 + i, 1);
     % (0, 0.5, 1) --> (0.5, 0.5, 1)
     constraint = [constraint, vh(i, 129) - 1 * (i - 1) / 128];
     H_c(i, 129) = (c -lambda) * vh(i, 129);
     % (0.5, 0.5, 1) --> (1, 0.5, 0)
-    constraint = [constraint, vh(129 + i, 129) - 1 * (129 - i) / 128];
-    H_c(129 + i, 129) = (c -lambda) * vh(129 + i, 129);
+    constraint = [constraint, vh(128 + i, 129) - 1 * (129 - i) / 128];
+    H_c(128 + i, 129) = (c -lambda) * vh(128 + i, 129);
     % (0, 1, 1) --> (0.5, 1, 0)
     constraint = [constraint, vh(i, 257) - 1 * (129 - i) / 128];
     H_c(i, 257) = (c -lambda) * vh(i, 257);
     % (0.5, 1, 0) --> (1, 1, 1)
-    constraint = [constraint, vh(129 + i, 257) - 1 * (i - 1) / 128];
-    H_c(129 + i, 257) = (c -lambda) * vh(129 + i, 257);
+    constraint = [constraint, vh(128 + i, 257) - 1 * (i - 1) / 128];
+    H_c(128 + i, 257) = (c -lambda) * vh(128 + i, 257);
 end
 
 f = sum_AREA_S - lambda * sum(constraint) + (c/2) * sum(constraint.^2);
