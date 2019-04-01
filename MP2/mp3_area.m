@@ -17,7 +17,7 @@ half = ceil( M / 2 );
 % hy = A'*vh;
 % % TODO: finetune itialization
 lambda = 1;
-c = 1000;
+c = 5;
 % S = hx.^2 + hy.^2;
 % sum_S = sum(S,'all');
 
@@ -121,7 +121,6 @@ H_c(M,1) = c*(vh(M,1) - 1) - lambda;
 H_c(M,half) = c*(vh(M,half)) - lambda;
 H_c(M,M) = c*(vh(M,M) - 1)- lambda;
 
-%{
 for i = 2:(half-1)
     % (0, 0, 1) --> (0, 0.5, 0)
     constraint = [constraint, vh(1, i) - 1 * (129 - i) / 128];
@@ -160,7 +159,6 @@ for i = 2:(half-1)
     constraint = [constraint, vh(128 + i, 257) - 1 * (i - 1) / 128];
     H_c(128 + i, 257) = c * (vh(128 + i, 257) - 1 * (i - 1) / 128) - lambda;
 end
-%}
 
 f = sum_AREA_S - lambda * sum(constraint) + (c/2) * sum(constraint.^2);
 g = g + H_c;
