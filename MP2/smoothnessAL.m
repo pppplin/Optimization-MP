@@ -2,15 +2,34 @@ function [f, g] = smoothnessAL(vh)
 N = 256;
 M = N + 1;
 half = ceil( M / 2 );
-A_g = 4*eye(M);
-A = -eye(M);
+A_g = 36*eye(M);
+A = -2*eye(M);
 for r = 1:N
     A(r,r+1) = 1;
-    A_g(r,r+1) = -2;
-    A_g(r+1,r) = -2;
+    A(r+1,r) = 1;
+    A_g(r,r+1) = -24;
+    A_g(r+1,r) = -24;
 end
-A_g(1,1) = 2;
-A_g(M,M) = 2;
+for r = 1:N-1
+    A_g(r,r+2) = 6;
+    A_g(r+2,r) = 6;
+end
+
+A(1,1) = 1;
+A(2,1) = -1;
+A(M,M) = 1;
+A(M-1,M) = -1;
+A_g(1,1) = 12;
+% A_g(2,1) = 30;
+% A_g(3,1) = 30;
+A_g(1,2) = -18;
+A_g(2,1) = -18;
+A_g(M,M) = 12;
+% A_g(2,2) = 10;
+% A_g(M-1,M-1) = 10;
+A_g(M-1,M) = -18;
+A_g(M,M-1) = -18;
+
 A = N*A;
 hx = vh*A;
 hy = A'*vh;
@@ -33,7 +52,7 @@ H_c(M,half)= (c - lambda)*(vh(M,half));
 H_c(M,M)= (c - lambda)*(vh(M,M) - 1);
 
 f = sum_S - lambda*sum(constraint) + (c/2)*sum(constraint.^2);
-g = N*N*(A_g*vh + vh*A_g) + H_c;
+g = N*N*(A_g'*vh + vh*A_g) + H_c;
 % if nargout > 1 % gradient required
 %     % g = 4A'AH; Hessian = 4A'A
 %  
